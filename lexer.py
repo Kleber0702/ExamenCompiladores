@@ -22,6 +22,11 @@ class Lexer:
         'const': 'CONST',
         'main': 'MAIN',
         'class': 'CLASS',
+        'int': 'INT',  # Agregado int como palabra reservada
+        'programa': 'PROGRAMA',  # Agregado 'programa' como palabra reservada
+        'read':'READ',
+        'end': 'END',
+        'printf': 'PRINTF',
     }
 
     tokens += reserved.values()
@@ -43,8 +48,11 @@ class Lexer:
 
     @staticmethod
     def t_IDENTIFICADOR(t):
-        r'\b[a-cA-C]\b'  # Identificadores: a, b, c
-        t.type = 'IDENTIFICADOR'
+        r'\b[a-zA-Z]+\b'  # Identificadores: cualquier combinación de letras
+        if t.value == 'suma':
+            t.type = 'IDENTIFICADOR'  # Marcar 'suma' como un identificador
+        else:
+            t.type = 'PALABRA_RESERVADA' if t.value in Lexer.reserved else 'IDENTIFICADOR'
         # Contador de tokens
         Lexer.token_count.setdefault(t.type, 0)
         Lexer.token_count[t.type] += 1
@@ -57,7 +65,7 @@ class Lexer:
 
     @staticmethod
     def t_PALABRA_RESERVADA(t):
-        r'for|do|public|static|const|main|class|programa|suma'  # Patrón para palabras reservadas
+        r'for|do|public|static|const|main|class|programa|read|printf|end'  # Agregado 'programa' como palabra reservada
         t.type = Lexer.reserved.get(t.value, 'PALABRA_RESERVADA')
         return t
 
